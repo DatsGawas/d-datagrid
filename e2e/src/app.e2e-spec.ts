@@ -10,7 +10,7 @@ describe('workspace-project App', () => {
 
   it('should display welcome message', () => {
     page.navigateTo();
-    expect(page.getTitleText()).toEqual('Welcome to d-datagrid!');
+    expect(page.getTitleText()).toEqual('d-datatable app is running!');
   });
 
   afterEach(async () => {
