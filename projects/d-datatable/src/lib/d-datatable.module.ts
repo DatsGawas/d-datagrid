@@ -4,11 +4,12 @@ import { DataService } from './datatable/datatable.service';
 import { CommonModule } from '@angular/common';
 import { ColumnComponent } from './datatable/column.component';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
     declarations: [DatatableComponent, ColumnComponent],
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, HttpClientModule],
     exports: [DatatableComponent, ColumnComponent]
 })
 export class DDatatableModule {

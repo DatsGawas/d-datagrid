@@ -1,100 +1,64 @@
-<div class="container-fluid my-3">
-    <div class="row">
-        <div class="col-3 ml-auto">
-            <div class="input-group custom-search">
-                <input type="text" [(ngModel)]="searchValue" class="form-control custom-search-input"
-                    (keyup)="SearchHandle()" aria-label="Text input with dropdown button" placeholder="Search...">
-                <div class="input-group-append">
-                    <!-- <button type="button" class="fa fa-search btn-primary"></button> -->
-                    <button class="btn btn-outline-secondary dropdown-toggle btn-custom-search" type="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    </button>
-                    <div class="dropdown-menu">
-                        <ng-container *ngFor="let column of columnData;trackBy: trackByColumn">
-                            <a class="dropdown-item" *ngIf="!column.hidden"
-                                (click)="selectColumnForSearchHandle(column)">{{column.label}}
-                                <i class="fa d-table-checkbox" [ngClass]="{
-                                  'fa-check-square-o': column.selectedForSearch,
-                                  'fa-square-o': !column.selectedForSearch
-                                }" aria-hidden="true"></i>
-                            </a>
+<div>
+    <h2>{{gridTitle}}</h2>
+</div>
+<div class="d-table-height" [style.maxHeight]="height">
+
+    <div class="d-table">
+
+        <div class="d-table-header">
+            <ng-container *ngFor="let column of columnData;trackBy: trackByColumn">
+                <div class="d-table-col" [style.width]="column.width" *ngIf="!column.hidden">
+                    {{column.label}} &nbsp; <i class="fa fa-sort" style="cursor: pointer;"
+                        (click)="sortHandle(column)"></i>
+                </div>
+            </ng-container>
+
+        </div>
+        <ng-container *ngFor="let data of gridViewData;trackBy: trackByRow">
+
+            <div class="d-table-row" (click)="onRowClick(data)">
+                <ng-container *ngFor="let column of columnData; let index= index;trackBy: trackByColumn">
+                    <div class="d-table-col" [style.width]="column.width" *ngIf="!column.hidden"
+                        title="{{data[column.dataKey]}}">
+                        <ng-container *ngIf="column.columnTemplate">
+                            <ng-template [ngTemplateOutlet]="column.columnTemplate"
+                                [ngTemplateOutletContext]="{column : column, row: data, index:index }">
+                            </ng-template>
+
+                        </ng-container>
+
+                        <ng-container *ngIf="!column.columnTemplate">
+                            {{data[column.dataKey]}}
+
                         </ng-container>
 
 
                     </div>
-                </div>
-            </div>
 
-        </div>
-    </div>
-    <div class="d-table-height" [style.maxHeight]="height">
 
-        <div class="d-table">
-
-            <div class="d-table-header">
-                <ng-container *ngFor="let column of columnData;trackBy: trackByColumn">
-                    <div class="d-table-col" [style.width]="column.width" *ngIf="!column.hidden">
-                        {{column.label}} &nbsp; <i class="fa fa-sort" style="cursor: pointer;"
-                            (click)="sortHandle(column)"></i>
-                    </div>
                 </ng-container>
-
             </div>
-            <!-- <div class="d-table-row">
-    <div class="d-table-col" *ngFor="let column of columnData" >
-      <filter-com [column]="column"></filter-com>
+        </ng-container>
     </div>
+</div>
 
-  </div> -->
-            <ng-container *ngFor="let data of gridViewData;trackBy: trackByRow">
+<ng-container *ngIf="gridViewData.length > 0">
+    <!-- <div class="pagination">
+        <div (click)="goToTopClickHandle()">{{pagginationDataModel.startIndex}}</div>
+        <i class="fa fa-chevron-left" (click)="prevClickHandle()"></i>
+        <span *ngFor="let list of pagginationDataModel.viewPageIndexlist"
+            (click)="onPageSelectHandle(list)">{{list}}</span>
+        <span class="ellipsis">...</span>
+        <i class="fa fa-chevron-right" (click)="nextClickHandle()"></i> &nbsp;
 
-                <div class="d-table-row" (click)="onRowClick(data)">
-                    <ng-container *ngFor="let column of columnData; let index= index;trackBy: trackByColumn">
-                        <div class="d-table-col" [style.width]="column.width" *ngIf="!column.hidden"
-                            title="{{data[column.dataKey]}}">
-                            <ng-container *ngIf="column.columnTemplate">
-                                <ng-template [ngTemplateOutlet]="column.columnTemplate"
-                                    [ngTemplateOutletContext]="{column : column, row: data, index:index }">
-                                </ng-template>
+        <div (click)="goToBootomClickHandle()">{{pagginationDataModel.lastIndex}}</div>
 
-                            </ng-container>
-
-                            <ng-container *ngIf="!column.columnTemplate">
-                                {{data[column.dataKey]}}
-
-                            </ng-container>
-
-
-                        </div>
-
-
-                    </ng-container>
-                </div>
-            </ng-container>
-        </div>
-    </div>
-
-    <ng-container *ngIf="gridViewData.length > 0">
-        <div class="container-fluid mt-2">
-            <div class="row justify-content-end align-items-center pagination">
-                <div (click)="goToTopClickHandle()" class="mr-2">{{pagginationDataModel.startIndex}}</div>
-                <i class="fa fa-chevron-left" (click)="prevClickHandle()"></i>
-                <span class="pl-1" *ngFor="let list of pagginationDataModel.viewPageIndexlist"
-                    (click)="onPageSelectHandle(list)">{{list}}</span>
-                <span class="ellipsis">...</span>
-                <i class="fa fa-chevron-right" (click)="nextClickHandle()"></i> &nbsp;
-
-                <div (click)="goToBootomClickHandle()" class="ml-2">{{pagginationDataModel.lastIndex}}</div>
-
-            </div>
-        </div>
+    </div> -->
 
 
 
-        <!-- <span style="cursor: pointer;" (click)="prevClickHandle()">PREV</span>&nbsp; <a>{{activePageNumber}}</a>
+    <!-- <span style="cursor: pointer;" (click)="prevClickHandle()">PREV</span>&nbsp; <a>{{activePageNumber}}</a>
         <a *ngIf="numberOfPages >= (activePageNumber + 1)">,{{activePageNumber + 1}}</a> &nbsp; <span
             style="cursor: pointer;" (click)="nextClickHandle()">NEXT</span> -->
 
-    </ng-container>
-
-</div>
+</ng-container>

@@ -1,24 +1,129 @@
-# DDatatable
+<h1 align="center">
+    D-Datatable
+  <br>
+</h1>
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.2.14.
+## Angular CLI - Installation
 
-## Code scaffolding
+### Overview
 
-Run `ng generate component component-name --project D-Datatable` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project D-Datatable`.
-> Note: Don't forget to add `--project D-Datatable` or else it will be added to the default project in your `angular.json` file. 
+The Angular CLI is a tool to initialize, develop, scaffold and maintain Angular applications
 
-## Build
+### Getting Started
 
-Run `ng build D-Datatable` to build the project. The build artifacts will be stored in the `dist/` directory.
+To install the Angular CLI:
 
-## Publishing
+```bash
+npm install -g @angular/cli
+```
+Generating and serving an Angular project via a development server Create and run a new project:
 
-After building your library with `ng build D-Datatable`, go to the dist folder `cd dist/d-datatable` and run `npm publish`.
+```bash
+ng new my-project
+cd my-project
+ng serve
+```
 
-## Running unit tests
+Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
 
-Run `ng test D-Datatable` to execute the unit tests via [Karma](https://karma-runner.github.io).
+For More on Angular CLI [commands](https://github.com/angular/angular-cli/wiki) click on the link.
 
-## Further help
+## D-datatable - Installation
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+To install this library, follow the steps given below:
+
+```bash
+$ cd your-angular-project
+```
+
+```bash
+$ npm install d-datatable --save
+```
+
+```bash
+$ npm install font-awesome@4.7.0 --save
+```
+
+and then from your Angular `AppModule`:
+
+```typescript
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { AppComponent } from './app.component';
+
+// To import D3-Chart :- 
+
+import { DDatatableModule } from 'd-datatable';
+
+@NgModule({
+    declarations: [
+        AppComponent
+    ],
+    imports: [
+        BrowserModule, DDatatableModule
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+# d-datatable Properties
+
+<table> 
+<tr>
+<th>Name</th>
+<th>String</th>
+<th>Default Value</th>
+</tr>
+<tr>
+ <td>gridData</td>
+ <td>Array</td>
+ <td>[]</td>
+</tr>
+<tr>
+ <td>pageSize</td>
+ <td>Number</td>
+ <td>10</td>
+</tr>
+<tr>
+ <td>height</td>
+ <td>String</td>
+ <td></td>
+</tr>
+<tr>
+ <td>gridTitle</td>
+ <td>String</td>
+ <td></td>
+</tr>
+</table>
+
+
+# d-column Properties
+
+<table> 
+<tr>
+<th>Name</th>
+<th>String</th>
+<th>Default Value</th>
+</tr>
+<tr>
+ <td>label</td>
+ <td>String</td>
+ <td></td>
+</tr>
+<tr>
+ <td>dataKey</td>
+ <td>Sring</td>
+ <td></td>
+</tr>
+<tr>
+ <td>width</td>
+ <td>String</td>
+ <td></td>
+</tr>
+<tr>
+ <td>hidden</td>
+ <td>Boolean</td>
+ <td>false</td>
+</tr>
+</table>
