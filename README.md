@@ -1,27 +1,152 @@
-# Datagrid
+<h1 align="center">
+    D-Datatable
+  <br>
+</h1>
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.20.
+## Angular CLI - Installation
 
-## Development server
+### Overview
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+The Angular CLI is a tool to initialize, develop, scaffold and maintain Angular applications
 
-## Code scaffolding
+### Getting Started
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+To install the Angular CLI:
 
-## Build
+```bash
+npm install -g @angular/cli
+```
+Generating and serving an Angular project via a development server Create and run a new project:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+```bash
+ng new my-project
+cd my-project
+ng serve
+```
 
-## Running unit tests
+Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+For More on Angular CLI [commands](https://github.com/angular/angular-cli/wiki) click on the link.
 
-## Running end-to-end tests
+## D-datatable - Installation
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+To install this library, follow the steps given below:
 
-## Further help
+```bash
+$ cd your-angular-project
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```bash
+$ npm install d-datatable --save
+```
+
+```bash
+$ npm install font-awesome@4.7.0 --save
+```
+
+and then from your Angular `AppModule`:
+
+```typescript
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { AppComponent } from './app.component';
+
+
+import { DDatatableModule } from 'd-datatable';
+
+@NgModule({
+    declarations: [
+        AppComponent
+    ],
+    imports: [
+        BrowserModule, DDatatableModule
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+# d-datatable Properties
+
+<table> 
+<tr>
+<th>Name</th>
+<th>String</th>
+<th>Default Value</th>
+</tr>
+<tr>
+ <td>gridData</td>
+ <td>Array</td>
+ <td>[]</td>
+</tr>
+<tr>
+ <td>pageSize</td>
+ <td>Number</td>
+ <td>10</td>
+</tr>
+<tr>
+ <td>height</td>
+ <td>String</td>
+ <td></td>
+</tr>
+<tr>
+ <td>gridTitle</td>
+ <td>String</td>
+ <td></td>
+</tr>
+</table>
+
+
+# d-column Properties
+
+<table> 
+<tr>
+<th>Name</th>
+<th>String</th>
+<th>Default Value</th>
+</tr>
+<tr>
+ <td>label</td>
+ <td>String</td>
+ <td></td>
+</tr>
+<tr>
+ <td>dataKey</td>
+ <td>Sring</td>
+ <td></td>
+</tr>
+<tr>
+ <td>width</td>
+ <td>String</td>
+ <td></td>
+</tr>
+<tr>
+ <td>hidden</td>
+ <td>Boolean</td>
+ <td>false</td>
+</tr>
+</table>
+
+# Basic code snippet
+
+```
+<d-datatable #tableRef [gridData]="gridData" [pageSize]="10" [height]="'40vh'" [gridTitle]="'Employee Data'">
+    <d-column [label]="'Name'" [dataKey]="'empName'">
+    </d-column>
+    <d-column [label]="'Code'" [dataKey]="'empCode'" ></d-column>
+</d-datatable>
+```
+
+# Sample Data
+```
+[
+  {
+    "empName": "dattaram Gawas",
+    "empCode": 11
+  },
+  {
+    "empName": "Sudarshan Hiray",
+    "empCode": 12
+  }
+]
+```
