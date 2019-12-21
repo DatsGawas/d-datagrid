@@ -42,23 +42,20 @@
     </div>
 </div>
 
-<ng-container *ngIf="gridViewData.length > 0">
-    <!-- <div class="pagination">
-        <div (click)="goToTopClickHandle()">{{pagginationDataModel.startIndex}}</div>
-        <i class="fa fa-chevron-left" (click)="prevClickHandle()"></i>
-        <span *ngFor="let list of pagginationDataModel.viewPageIndexlist"
-            (click)="onPageSelectHandle(list)">{{list}}</span>
-        <span class="ellipsis">...</span>
-        <i class="fa fa-chevron-right" (click)="nextClickHandle()"></i> &nbsp;
+<ng-container *ngIf="numberOfPages > 1">
 
-        <div (click)="goToBootomClickHandle()">{{pagginationDataModel.lastIndex}}</div>
+    <div class="d-pagination">
+        <div (click)="goToTopClickHandle()"
+            [ngClass]="{'d-active_page': pagginationDataModel.activePage == pagginationDataModel.startIndex}">
+            {{pagginationDataModel.startIndex}}</div>
+        <div *ngIf="pagginationDataModel.showArrow" (click)="prevClickHandle()">PREV</div>
 
-    </div> -->
+        <div *ngFor="let list of pagginationDataModel.viewPageIndexlist" (click)="onPageSelectHandle(list)"
+            [ngClass]="{'d-active_page': pagginationDataModel.activePage == list}">{{list}}</div>
 
-
-
-    <!-- <span style="cursor: pointer;" (click)="prevClickHandle()">PREV</span>&nbsp; <a>{{activePageNumber}}</a>
-        <a *ngIf="numberOfPages >= (activePageNumber + 1)">,{{activePageNumber + 1}}</a> &nbsp; <span
-            style="cursor: pointer;" (click)="nextClickHandle()">NEXT</span> -->
-
+        <div *ngIf="pagginationDataModel.showArrow" (click)="nextClickHandle()">NEXT</div>
+        <div (click)="goToBootomClickHandle()"
+            [ngClass]="{'d-active_page': pagginationDataModel.activePage == pagginationDataModel.lastIndex}">
+            {{pagginationDataModel.lastIndex}}</div>
+    </div>
 </ng-container>

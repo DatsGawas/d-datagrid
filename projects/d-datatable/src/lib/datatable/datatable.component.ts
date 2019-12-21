@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { ColumnComponent } from "./column.component";
 import { DataService } from "./datatable.service";
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'd-datatable',
@@ -17,39 +18,147 @@ import { DataService } from "./datatable.service";
 })
 
 export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
-
+    /**
+     * actual data to be render in data grid
+     *
+     * @type {any[]}
+     * @memberof DatatableComponent
+     */
     @Input() gridData: any[] = [];
 
+    /**
+     * title for data grid
+     *
+     * @type {string}
+     * @memberof DatatableComponent
+     */
     @Input() gridTitle: string;
 
+    /**
+     * heigth for data grid
+     *
+     * @type {string}
+     * @memberof DatatableComponent
+     */
     @Input() height: string;
 
+    /**
+     * number of record in one page
+     *
+     * @memberof DatatableComponent
+     */
     @Input() pageSize = 10;
 
+    /**
+     * array of column's
+     *
+     * @type {any[]}
+     * @memberof DatatableComponent
+     */
     columnData: any[] = [];
 
+    /**
+     * binded to the view and filterd grid data
+     *
+     * @type {any[]}
+     * @memberof DatatableComponent
+     */
     gridViewData: any[];
 
+    /**
+     * store number of pages depending on total record and page size calculation
+     *
+     * @memberof DatatableComponent
+     */
     numberOfPages = 0;
 
-    activePageNumber = 1
-
+    /**
+     * store list of column which are going to use for searching
+     *
+     * @type {any[]}
+     * @memberof DatatableComponent
+     */
     listOfColumnForSearch: any[] = [];
 
+    /**
+     * store search value
+     *
+     * @memberof DatatableComponent
+     */
     searchValue = '';
 
+    /**
+     * search functionality will start after atleast 3 character entered
+     *
+     * @memberof DatatableComponent
+     */
     searchValueLength = 3;
+    /**
+     * created model for pagination functionality
+     *
+     * @type {PagginationDataModel}
+     * @memberof DatatableComponent
+     */
     pagginationDataModel: PagginationDataModel;
 
+    /**
+     * event used for emit selected row data
+     *
+     * @type {EventEmitter<any>}
+     * @memberof DatatableComponent
+     */
     @Output() getRowData: EventEmitter<any> = new EventEmitter<any>();
 
+    /**
+     * reference of column tag
+     *
+     * @type {QueryList<ColumnComponent>}
+     * @memberof DatatableComponent
+     */
     @ContentChildren(ColumnComponent) columnRef: QueryList<ColumnComponent>;
 
+    /**
+     * store subscribtion of grid data
+     *
+     * @type {Subscription}
+     * @memberof DatatableComponent
+     */
+    gridDataSubscribtion: Subscription;
 
+    /**
+     * store subscribtion of grid view data
+     *
+     * @type {Subscription}
+     * @memberof DatatableComponent
+     */
+    gridViewDataSubscribtion: Subscription;
+
+    /**
+     * store subscribtion of column data
+     *
+     * @type {Subscription}
+     * @memberof DatatableComponent
+     */
+    columnDataSubscribtion: Subscription;
+
+
+
+    /**
+     * Creates an instance of DatatableComponent.
+     * creates an instance of PagginationDataModel
+     * @param {DataService} _dataService
+     * @memberof DatatableComponent
+     */
     constructor(private _dataService: DataService) {
         this.pagginationDataModel = new PagginationDataModel();
     }
 
+    /**
+     * detect changes of gridData input property and do appropriate action
+     *
+     * @param {import("@angular/core").SimpleChanges} changes
+     * @memberof DatatableComponent
+     */
     ngOnChanges(changes: import("@angular/core").SimpleChanges): void {
         if (changes['gridData'] && changes.gridData.currentValue != changes.gridData.previousValue) {
             this._dataService.gridDataBehaviour.next(changes.gridData.currentValue);
@@ -57,6 +166,12 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
         }
     }
 
+    /**
+     * subscribe dataservice observable
+     * add initial logic
+     *
+     * @memberof DatatableComponent
+     */
     ngOnInit() {
         this._dataService.gridDataBehaviour.subscribe((data: any) => {
             if (data && data.length > 0) {
@@ -77,13 +192,25 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
         });
     }
 
+    /**
+     * create Paggination DataModel Object
+     * find number of pages
+     * @memberof DatatableComponent
+     */
     createPagginationData() {
         this.numberOfPages = Math.ceil(this.gridData.length / this.pageSize);
         this.pagginationDataModel = new PagginationDataModel(this.numberOfPages);
 
     }
 
-    createViewData(data) {
+
+    /**
+     * create view data accroding page size
+     *
+     * @param {any[]} data
+     * @memberof DatatableComponent
+     */
+    createViewData(data: any[]) {
         let startIndex: number;
         let endIndex: number;
         if (this.pagginationDataModel.activePage == 1) {
@@ -97,65 +224,128 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
 
     }
 
+    /**
+     * implement ngAfterContentInit interface
+     *
+     * @memberof DatatableComponent
+     */
     ngAfterContentInit() {
         this.createColumnConfig();
     }
+    /**
+     * create column cofig object
+     *
+     * @memberof DatatableComponent
+     */
     createColumnConfig() {
         if (this.columnRef) {
             this.columnData = this.columnRef.toArray();
-            this.columnData[0].selectedForSearch = true;
+            if (this.columnData && this.columnData.length) {
+                for (let index = 0; index < this.columnData.length; index++) {
+                    if (!this.columnData[index].hidden) {
+                        this.columnData[index].selectedForSearch = true;
+                        return;
+                    }
+                }
+            }
             this._dataService.columnData = this.columnData;
         }
     }
 
 
+    /**
+     * implement Trackby for Row Iteration
+     *
+     * @param {*} index
+     * @returns
+     * @memberof DatatableComponent
+     */
     trackByRow(index: any) {
         return index;
     }
 
+    /**
+     * implement Trackby for Column Iteration
+     *
+     * @param {*} index
+     * @returns
+     * @memberof DatatableComponent
+     */
     trackByColumn(index: any) {
         return index;
     }
 
+    /**
+     * emit Row click data
+     *
+     * @param {*} row
+     * @memberof DatatableComponent
+     */
     onRowClick(row: any) {
         this.getRowData.emit(row);
     }
 
+    /**
+     * create next set of page index's
+     *
+     * @memberof DatatableComponent
+     */
     nextClickHandle() {
-
-
         this.pagginationDataModel.createNextSetOfViewData(2);
-
-        if (this.pagginationDataModel.lastIndex != this.activePageNumber) {
-            this.activePageNumber = this.activePageNumber + 1;
+        if (this.pagginationDataModel.lastIndex != this.pagginationDataModel.activePage) {
             this.createViewData(this.gridData);
         }
     }
 
+    /**
+     * create prev set of page index's
+     *
+     * @memberof DatatableComponent
+     */
     prevClickHandle() {
         this.pagginationDataModel.createNextSetOfViewData(1);
-
-        if (this.activePageNumber != 1) {
-            this.activePageNumber = this.activePageNumber - 1;
-            this.createViewData(this.gridData);
-        }
+        this.createViewData(this.gridData);
     }
 
+    /**
+     * go to first page
+     *
+     * @memberof DatatableComponent
+     */
     goToTopClickHandle() {
         this.pagginationDataModel.topSetOfData();
-        this.pagginationDataModel.activePage
+        this.createViewData(this.gridData);
     }
 
+    /**
+     * go to last page
+     *
+     * @memberof DatatableComponent
+     */
     goToBootomClickHandle() {
         this.pagginationDataModel.bottomSetOfEndData();
+        this.createViewData(this.gridData);
+
     }
 
+    /**
+     * on individual page click filter data
+     *
+     * @param {number} activeNumbar
+     * @memberof DatatableComponent
+     */
     onPageSelectHandle(activeNumbar: number) {
         this.pagginationDataModel.activePage = activeNumbar;
         this.createViewData(this.gridData);
     }
 
 
+    /**
+     * do asc and desc sort visa versa
+     *
+     * @param {ColumnComponent} column
+     * @memberof DatatableComponent
+     */
     sortHandle(column: ColumnComponent) {
         column.sort = !column.sort;
         this.gridViewData.sort((x, y) => {
@@ -164,10 +354,21 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
         this._dataService.gridViewDataBehaviour.next(this.gridViewData);
     }
 
+    /**
+     * add or remove column from search column array
+     *
+     * @param {ColumnComponent} column
+     * @memberof DatatableComponent
+     */
     selectColumnForSearchHandle(column: ColumnComponent) {
         column.selectedForSearch = !column.selectedForSearch;
     }
 
+    /**
+     * do search operation on basic of selected column
+     *
+     * @memberof DatatableComponent
+     */
     SearchHandle() {
         const selectColumnList = this.columnData.filter((col) => (!col.hidden && col.selectedForSearch));
         let dummyData = Object.assign([], this.gridData);
@@ -194,6 +395,23 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
         this._dataService.gridViewDataBehaviour.next(resultData);
     }
 
+    /**
+     * implement ngOnDestroy Interface
+     *
+     * @memberof DatatableComponent
+     */
+    ngOnDestroy(): void {
+        if (this.gridDataSubscribtion) {
+            this.gridDataSubscribtion.unsubscribe();
+        }
+        if (this.gridViewDataSubscribtion) {
+            this.gridViewDataSubscribtion.unsubscribe();
+        }
+        if (this.columnDataSubscribtion) {
+            this.columnDataSubscribtion.unsubscribe();
+        }
+    }
+
 }
 
 export class PagginationDataModel {
@@ -205,7 +423,13 @@ export class PagginationDataModel {
     viewLastLIndex = 4
     showPageList = false;
     activePage = 1;
+    showArrow = true;
 
+    /**
+     *Creates an instance of PagginationDataModel.
+     * @param {number} [lastI]
+     * @memberof PagginationDataModel
+     */
     constructor(lastI?: number) {
         this.lastIndex = lastI;
         if (lastI) {
@@ -213,20 +437,43 @@ export class PagginationDataModel {
         }
     }
 
+    /**
+     * create pagenumber iteger into array of intergers for showing number of pages
+     *
+     * @memberof PagginationDataModel
+     */
     convertNumberIntoArray() {
-        for (let index = 1; index <= this.lastIndex; index++) {
+        for (let index = 1; index < this.lastIndex; index++) {
             this.pageListViewArray.push(index);
+        }
+        if (this.pageListViewArray.length < this.viewLastLIndex) {
+            this.viewLastLIndex = this.pageListViewArray.length;
         }
         this.createViewPageIndexList(this.viewStartIndex, this.viewLastLIndex);
     }
 
+    /**
+     * creates an set of page data for UI
+     *
+     * @param {number} startI
+     * @param {number} endI
+     * @memberof PagginationDataModel
+     */
     createViewPageIndexList(startI: number, endI: number) {
         if (this.pageListViewArray.length > 1) {
             this.viewPageIndexlist = this.pageListViewArray.slice(startI, endI);
             this.showPageList = true;
+        } else {
+            this.showArrow = false;
         }
     }
 
+    /**
+     * creates an set of page data for UI on Prev and Next click
+     *
+     * @param {number} optNumber
+     * @memberof PagginationDataModel
+     */
     createNextSetOfViewData(optNumber: number) {
         if (optNumber == 2 && this.viewLastLIndex != (this.lastIndex - 1)) {
             this.viewStartIndex = this.viewStartIndex + 1;
@@ -239,15 +486,35 @@ export class PagginationDataModel {
 
     }
 
+    /**
+     * 
+     * do first page click operation 
+     *
+     * @memberof PagginationDataModel
+     */
     topSetOfData() {
         this.activePage = 1;
         this.viewStartIndex = 1;
-        this.viewLastLIndex = 4;
+        if ((this.viewStartIndex + 3) > this.pageListViewArray.length) {
+            this.viewLastLIndex = this.pageListViewArray.length;
+        } else if ((this.viewStartIndex + 3) < this.viewLastLIndex) {
+            this.viewLastLIndex = 4;
+        }
         this.viewPageIndexlist = this.pageListViewArray.slice(this.viewStartIndex, this.viewLastLIndex);
     }
 
+    /**
+     * do last click operation
+     *
+     * @memberof PagginationDataModel
+     */
     bottomSetOfEndData() {
-        this.viewStartIndex = ((this.lastIndex - 1) - 3);
+        this.activePage = this.lastIndex;
+        if (((this.lastIndex - 1) - 3) < 1) {
+            this.viewStartIndex = 1;
+        } else {
+            this.viewStartIndex = ((this.lastIndex - 1) - 3);
+        }
         this.viewLastLIndex = (this.lastIndex - 1);
         this.viewPageIndexlist = this.pageListViewArray.slice(this.viewStartIndex, this.viewLastLIndex);
     }

@@ -180,3 +180,27 @@
     cursor: pointer;
 }
 
+
+.d-pagination {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .d-pagination > div {
+    background-color: #f1f1f1;
+    margin: 5px;
+    padding: 5px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 11px;
+  }
+
+  .d-pagination :hover {
+    background-color:DodgerBlue;
+    color: #f1f1f1;
+  }
+
+  .d-pagination > .d-active_page {
+    background-color:DodgerBlue;
+    color: #f1f1f1;
+  }
