@@ -21,7 +21,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
     /**
      * actual data to be render in data grid
      *
-     * @type {any[]}
+     * @param any[]
      * @memberof DatatableComponent
      */
     @Input() gridData: any[] = [];
@@ -29,7 +29,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
     /**
      * title for data grid
      *
-     * @type {string}
+     * @param string
      * @memberof DatatableComponent
      */
     @Input() gridTitle: string;
@@ -37,7 +37,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
     /**
      * heigth for data grid
      *
-     * @type {string}
+     * @param string
      * @memberof DatatableComponent
      */
     @Input() height: string;
@@ -52,7 +52,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
     /**
      * array of column's
      *
-     * @type {any[]}
+     * @param any[]
      * @memberof DatatableComponent
      */
     columnData: any[] = [];
@@ -60,7 +60,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
     /**
      * binded to the view and filterd grid data
      *
-     * @type {any[]}
+     * @param any[]
      * @memberof DatatableComponent
      */
     gridViewData: any[];
@@ -75,7 +75,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
     /**
      * store list of column which are going to use for searching
      *
-     * @type {any[]}
+     * @param any[]
      * @memberof DatatableComponent
      */
     listOfColumnForSearch: any[] = [];
@@ -93,10 +93,11 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
      * @memberof DatatableComponent
      */
     searchValueLength = 3;
+
     /**
      * created model for pagination functionality
      *
-     * @type {PagginationDataModel}
+     * @param PagginationDataModel
      * @memberof DatatableComponent
      */
     pagginationDataModel: PagginationDataModel;
@@ -104,7 +105,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
     /**
      * event used for emit selected row data
      *
-     * @type {EventEmitter<any>}
+     * @param EventEmitter<any>
      * @memberof DatatableComponent
      */
     @Output() getRowData: EventEmitter<any> = new EventEmitter<any>();
@@ -112,7 +113,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
     /**
      * reference of column tag
      *
-     * @type {QueryList<ColumnComponent>}
+     * @param QueryList<ColumnComponent>
      * @memberof DatatableComponent
      */
     @ContentChildren(ColumnComponent) columnRef: QueryList<ColumnComponent>;
@@ -120,7 +121,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
     /**
      * store subscribtion of grid data
      *
-     * @type {Subscription}
+     * @param Subscription
      * @memberof DatatableComponent
      */
     gridDataSubscribtion: Subscription;
@@ -128,7 +129,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
     /**
      * store subscribtion of grid view data
      *
-     * @type {Subscription}
+     * @param Subscription
      * @memberof DatatableComponent
      */
     gridViewDataSubscribtion: Subscription;
@@ -136,7 +137,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
     /**
      * store subscribtion of column data
      *
-     * @type {Subscription}
+     * @param Subscription
      * @memberof DatatableComponent
      */
     columnDataSubscribtion: Subscription;
@@ -146,7 +147,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
     /**
      * Creates an instance of DatatableComponent.
      * creates an instance of PagginationDataModel
-     * @param {DataService} _dataService
+     * @param DataService _dataService
      * @memberof DatatableComponent
      */
     constructor(private _dataService: DataService) {
@@ -156,7 +157,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
     /**
      * detect changes of gridData input property and do appropriate action
      *
-     * @param {import("@angular/core").SimpleChanges} changes
+     * @param import("@angular/core").SimpleChanges changes
      * @memberof DatatableComponent
      */
     ngOnChanges(changes: import("@angular/core").SimpleChanges): void {
@@ -207,7 +208,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
     /**
      * create view data accroding page size
      *
-     * @param {any[]} data
+     * @param any[] data
      * @memberof DatatableComponent
      */
     createViewData(data: any[]) {
@@ -256,7 +257,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
     /**
      * implement Trackby for Row Iteration
      *
-     * @param {*} index
+     * @param * index
      * @returns
      * @memberof DatatableComponent
      */
@@ -267,7 +268,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
     /**
      * implement Trackby for Column Iteration
      *
-     * @param {*} index
+     * @param index
      * @returns
      * @memberof DatatableComponent
      */
@@ -278,7 +279,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
     /**
      * emit Row click data
      *
-     * @param {*} row
+     * @param row
      * @memberof DatatableComponent
      */
     onRowClick(row: any) {
@@ -331,7 +332,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
     /**
      * on individual page click filter data
      *
-     * @param {number} activeNumbar
+     * @param number activeNumbar
      * @memberof DatatableComponent
      */
     onPageSelectHandle(activeNumbar: number) {
@@ -343,7 +344,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
     /**
      * do asc and desc sort visa versa
      *
-     * @param {ColumnComponent} column
+     * @param ColumnComponent column
      * @memberof DatatableComponent
      */
     sortHandle(column: ColumnComponent) {
@@ -357,7 +358,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
     /**
      * add or remove column from search column array
      *
-     * @param {ColumnComponent} column
+     * @param ColumnComponent column
      * @memberof DatatableComponent
      */
     selectColumnForSearchHandle(column: ColumnComponent) {
@@ -427,7 +428,7 @@ export class PagginationDataModel {
 
     /**
      *Creates an instance of PagginationDataModel.
-     * @param {number} [lastI]
+     * @param number [lastI]
      * @memberof PagginationDataModel
      */
     constructor(lastI?: number) {
@@ -455,8 +456,8 @@ export class PagginationDataModel {
     /**
      * creates an set of page data for UI
      *
-     * @param {number} startI
-     * @param {number} endI
+     * @param number startI
+     * @param number endI
      * @memberof PagginationDataModel
      */
     createViewPageIndexList(startI: number, endI: number) {
@@ -471,7 +472,7 @@ export class PagginationDataModel {
     /**
      * creates an set of page data for UI on Prev and Next click
      *
-     * @param {number} optNumber
+     * @param number optNumber
      * @memberof PagginationDataModel
      */
     createNextSetOfViewData(optNumber: number) {

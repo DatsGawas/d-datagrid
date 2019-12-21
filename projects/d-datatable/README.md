@@ -126,3 +126,27 @@ export class AppModule { }
  <td>false</td>
 </tr>
 </table>
+
+# Basic code snippet
+
+```
+<d-datatable #tableRef [gridData]="gridData" [pageSize]="10" [height]="'40vh'" [gridTitle]="'Employee Data'">
+    <d-column [label]="'Name'" [dataKey]="'empName'">
+    </d-column>
+    <d-column [label]="'Code'" [dataKey]="'empCode'" ></d-column>
+</d-datatable>
+```
+
+# Sample Data
+```
+[
+  {
+    "empName": "dattaram Gawas",
+    "empCode": 11
+  },
+  {
+    "empName": "Sudarshan Hiray",
+    "empCode": 12
+  }
+]
+```

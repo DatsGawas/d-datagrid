@@ -1,9 +1,24 @@
 {
-    "name": "D-Datatable",
-    "version": "1.0.3",
+    "name": "d-datatable",
+    "version": "1.0.5",
     "peerDependencies": {
         "@angular/common": "^8.2.14",
         "@angular/core": "^8.2.14",
         "font-awesome": "^4.7.0"
-    }
+    },
+    "description": "Generic datatable",
+    "main": "main-es2015.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Dattaram Gawas",
+    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/DatsGawas/d-datagrid.git"
+    },
+    "bugs": {
+        "url": "https://github.com/DatsGawas/d-datagrid/issues"
+    },
+    "homepage": "https://github.com/DatsGawas/d-datagrid#readme"
 }
