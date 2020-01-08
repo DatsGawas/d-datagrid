@@ -11,8 +11,11 @@
       placeholder="search"
     />
     <ul *ngIf="showColumnDropdown">
-      <li *ngFor="let column of columnData; trackBy: trackByColumn">
-        <a class="col-name"
+      <li
+        *ngFor="let column of columnData; trackBy: trackByColumn"
+        (click)="selectColumnForSearchHandle(column)"
+      >
+        <a class="col-name" *ngIf="!column.hidden"
           >{{ column.label }}
           <i
             class="fa d-table-checkbox"

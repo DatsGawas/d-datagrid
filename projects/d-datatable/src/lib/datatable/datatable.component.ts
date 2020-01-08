@@ -410,6 +410,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
    * @memberof DatatableComponent
    */
   selectColumnForSearchHandle(column: ColumnComponent) {
+    this.showColumnDropdown = false;
     column.selectedForSearch = !column.selectedForSearch;
   }
 
