@@ -1,61 +1,121 @@
-<div>
-    <h2>{{gridTitle}}</h2>
+<div class="d-table-name">
+  <span class="d-table-heading">{{ gridTitle }}</span>
+  <span style="float: right;">
+    <input
+      type="text"
+      [(ngModel)]="searchValue"
+      class="form-control custom-search-input"
+      (keyup)="SearchHandle()"
+      (focus)="focusHandle()"
+      aria-label="Text input with dropdown button"
+      placeholder="search"
+    />
+    <ul *ngIf="showColumnDropdown">
+      <li *ngFor="let column of columnData; trackBy: trackByColumn">
+        <a class="col-name"
+          >{{ column.label }}
+          <i
+            class="fa d-table-checkbox"
+            [ngClass]="{
+              'fa-check-square-o': column.selectedForSearch,
+              'fa-square-o': !column.selectedForSearch
+            }"
+            aria-hidden="true"
+          ></i
+        ></a>
+      </li>
+    </ul>
+  </span>
 </div>
 <div class="d-table-height" [style.maxHeight]="height">
-
-    <div class="d-table">
-
-        <div class="d-table-header">
-            <ng-container *ngFor="let column of columnData;trackBy: trackByColumn">
-                <div class="d-table-col" [style.width]="column.width" *ngIf="!column.hidden">
-                    {{column.label}} &nbsp; <i class="fa fa-sort" style="cursor: pointer;"
-                        (click)="sortHandle(column)"></i>
-                </div>
+  <div class="d-table">
+    <div class="d-table-header">
+      <ng-container *ngFor="let column of columnData; trackBy: trackByColumn">
+        <div
+          class="d-table-col"
+          [style.width]="column.width"
+          *ngIf="!column.hidden"
+        >
+          {{ column.label }} &nbsp;
+          <i
+            class="fa fa-sort"
+            style="cursor: pointer;"
+            (click)="sortHandle(column)"
+          ></i>
+        </div>
+      </ng-container>
+    </div>
+    <ng-container *ngFor="let data of gridViewData; trackBy: trackByRow">
+      <div class="d-table-row" (click)="onRowClick(data)">
+        <ng-container
+          *ngFor="
+            let column of columnData;
+            let index = index;
+            trackBy: trackByColumn
+          "
+        >
+          <div
+            class="d-table-col"
+            [style.width]="column.width"
+            *ngIf="!column.hidden"
+            title="{{ data[column.dataKey] }}"
+          >
+            <ng-container *ngIf="column.columnTemplate">
+              <ng-template
+                [ngTemplateOutlet]="column.columnTemplate"
+                [ngTemplateOutletContext]="{
+                  column: column,
+                  row: data,
+                  index: index
+                }"
+              >
+              </ng-template>
             </ng-container>
 
-        </div>
-        <ng-container *ngFor="let data of gridViewData;trackBy: trackByRow">
-
-            <div class="d-table-row" (click)="onRowClick(data)">
-                <ng-container *ngFor="let column of columnData; let index= index;trackBy: trackByColumn">
-                    <div class="d-table-col" [style.width]="column.width" *ngIf="!column.hidden"
-                        title="{{data[column.dataKey]}}">
-                        <ng-container *ngIf="column.columnTemplate">
-                            <ng-template [ngTemplateOutlet]="column.columnTemplate"
-                                [ngTemplateOutletContext]="{column : column, row: data, index:index }">
-                            </ng-template>
-
-                        </ng-container>
-
-                        <ng-container *ngIf="!column.columnTemplate">
-                            {{data[column.dataKey]}}
-
-                        </ng-container>
-
-
-                    </div>
-
-
-                </ng-container>
-            </div>
+            <ng-container *ngIf="!column.columnTemplate">
+              {{ data[column.dataKey] }}
+            </ng-container>
+          </div>
         </ng-container>
-    </div>
+      </div>
+    </ng-container>
+  </div>
 </div>
 
 <ng-container *ngIf="numberOfPages > 1">
-
-    <div class="d-pagination">
-        <div (click)="goToTopClickHandle()"
-            [ngClass]="{'d-active_page': pagginationDataModel.activePage == pagginationDataModel.startIndex}">
-            {{pagginationDataModel.startIndex}}</div>
-        <div *ngIf="pagginationDataModel.showArrow" (click)="prevClickHandle()">PREV</div>
-
-        <div *ngFor="let list of pagginationDataModel.viewPageIndexlist" (click)="onPageSelectHandle(list)"
-            [ngClass]="{'d-active_page': pagginationDataModel.activePage == list}">{{list}}</div>
-
-        <div *ngIf="pagginationDataModel.showArrow" (click)="nextClickHandle()">NEXT</div>
-        <div (click)="goToBootomClickHandle()"
-            [ngClass]="{'d-active_page': pagginationDataModel.activePage == pagginationDataModel.lastIndex}">
-            {{pagginationDataModel.lastIndex}}</div>
+  <div class="d-pagination">
+    <div
+      (click)="goToTopClickHandle()"
+      [ngClass]="{
+        'd-active_page':
+          pagginationDataModel.activePage == pagginationDataModel.startIndex
+      }"
+    >
+      {{ pagginationDataModel.startIndex }}
     </div>
+    <div *ngIf="pagginationDataModel.showArrow" (click)="prevClickHandle()">
+      PREV
+    </div>
+
+    <div
+      *ngFor="let list of pagginationDataModel.viewPageIndexlist"
+      (click)="onPageSelectHandle(list)"
+      [ngClass]="{ 'd-active_page': pagginationDataModel.activePage == list }"
+    >
+      {{ list }}
+    </div>
+
+    <div *ngIf="pagginationDataModel.showArrow" (click)="nextClickHandle()">
+      NEXT
+    </div>
+    <div
+      (click)="goToBootomClickHandle()"
+      [ngClass]="{
+        'd-active_page':
+          pagginationDataModel.activePage == pagginationDataModel.lastIndex
+      }"
+    >
+      {{ pagginationDataModel.lastIndex }}
+    </div>
+  </div>
 </ng-container>
