@@ -23,6 +23,12 @@ import { Subscription } from "rxjs";
   providers: [DataService]
 })
 export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
+  @Input() classForHeader: string = ""; // class to be added for header
+  @Input() classForSearch: string = ""; // class to be added for Search
+  @Input() explicitClass: string = ""; // class to be added for Search
+
+  @Input() explicitClassColor: string = ""; // class to be added for Color border
+
   /**
    * actual data to be render in data grid
    *
@@ -45,7 +51,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
    * @type {string}
    * @memberof DatatableComponent
    */
-  @Input() gridTitle: string = "Datta";
+  @Input() gridTitle: string;
 
   /**
    * heigth for data grid
@@ -97,7 +103,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
    *
    * @memberof DatatableComponent
    */
-  searchValueLength = 3;
+  searchValueLength = 2;
   /**
    * created model for pagination functionality
    *
@@ -197,11 +203,18 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
    * @memberof DatatableComponent
    */
   ngOnInit() {
+    // console.log("#####", typeof this.explicitClassColor)
     this._dataService.gridDataBehaviour.subscribe((data: any) => {
       if (data && data.length > 0) {
         this.gridData = data;
         this.createPagginationData();
+      } else {
+        this.numberOfPages = 0;
       }
+      // if (this.explicitClassColor == "showBorder") {
+      //   if (this.gridData)
+      //     console.log("*****", this.columnData, this.gridData)
+      // }
     });
 
     this._dataService.gridViewDataBehaviour.subscribe((data: any) => {
@@ -209,15 +222,12 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
         this.createViewData(data);
       } else {
         this.gridViewData = [];
+        this.numberOfPages = 0;
       }
     });
     this._dataService.columnDataBehaviour.subscribe((data: any) => {
       this.columnData = data;
     });
-  }
-
-  focusHandle() {
-    this.showColumnDropdown = true;
   }
 
   /**
@@ -237,6 +247,8 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
    * @memberof DatatableComponent
    */
   createViewData(data: any[]) {
+    this.numberOfPages = Math.ceil(data.length / this.pageSize);
+    this.pagginationDataModel = new PagginationDataModel(this.numberOfPages);
     let startIndex: number;
     let endIndex: number;
     if (this.pagginationDataModel.activePage == 1) {
@@ -247,6 +259,7 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
       endIndex = this.pagginationDataModel.activePage * this.pageSize;
     }
     this.gridViewData = data.slice(startIndex, endIndex);
+    console.log("%%%%%%", this.gridViewData);
   }
 
   /**
@@ -373,19 +386,30 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
    */
   sortHandle(column: ColumnComponent) {
     column.sort = !column.sort;
-    this.gridViewData.sort((a, b) => {
+    const sortData = JSON.parse(JSON.stringify(this.gridViewData));
+    sortData.sort((a, b) => {
       let x;
       let y;
       if (column.dataKey.includes(".")) {
-        x = this.sortInnerFunc(column.dataKey, a).toLowerCase();
-        y = this.sortInnerFunc(column.dataKey, b).toLowerCase();
+        if ("number" === typeof this.sortInnerFunc(column.dataKey, a)) {
+          x = this.sortInnerFunc(column.dataKey, a);
+          y = this.sortInnerFunc(column.dataKey, b);
+        } else {
+          x = this.sortInnerFunc(column.dataKey, a).toLowerCase();
+          y = this.sortInnerFunc(column.dataKey, b).toLowerCase();
+        }
       } else {
-        x = a[column.dataKey].toLowerCase();
-        y = b[column.dataKey].toLowerCase();
+        if ("number" === typeof a[column.dataKey]) {
+          x = a[column.dataKey];
+          y = b[column.dataKey];
+        } else {
+          x = a[column.dataKey].toLowerCase();
+          y = b[column.dataKey].toLowerCase();
+        }
       }
       return (x == y ? 0 : x < y ? -1 : 1) * (column.sort ? 1 : -1);
     });
-    this._dataService.gridViewDataBehaviour.next(this.gridViewData);
+    this.gridViewData = sortData;
   }
 
   sortInnerFunc(temp: string, data: any) {
@@ -410,7 +434,6 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
    * @memberof DatatableComponent
    */
   selectColumnForSearchHandle(column: ColumnComponent) {
-    this.showColumnDropdown = false;
     column.selectedForSearch = !column.selectedForSearch;
   }
 
@@ -420,32 +443,42 @@ export class DatatableComponent implements OnInit, AfterContentInit, OnChanges {
    * @memberof DatatableComponent
    */
   SearchHandle() {
+    const searchV = this.searchValue.replace(/[^a-zA-Z0-9 ]/g, "");
     const selectColumnList = this.columnData.filter(
       col => !col.hidden && col.selectedForSearch
     );
     let dummyData = Object.assign([], this.gridData);
     let resultData = [];
-    if (
-      this.searchValue != "" &&
-      this.searchValue.length >= this.searchValueLength
-    ) {
-      if (
-        selectColumnList &&
-        selectColumnList.length > 0 &&
-        this.searchValue != ""
-      ) {
+    if (searchV != "" && searchV.length >= this.searchValueLength) {
+      if (selectColumnList && selectColumnList.length > 0 && searchV != "") {
         selectColumnList.forEach((col: ColumnComponent) => {
           dummyData.forEach((data: any, index: any) => {
             if (data) {
               let x;
               if (col.dataKey.includes(".")) {
-                x = this.sortInnerFunc(col.dataKey, data).toLowerCase();
+                if ("number" === typeof this.sortInnerFunc(col.dataKey, data)) {
+                  x = this.sortInnerFunc(col.dataKey, data);
+                } else {
+                  x = this.sortInnerFunc(col.dataKey, data).toLowerCase();
+                }
               } else {
-                x = data[col.dataKey].toLowerCase();
+                if ("number" === typeof data[col.dataKey]) {
+                  x = data[col.dataKey];
+                } else {
+                  x = data[col.dataKey].toLowerCase();
+                }
               }
-              if (x && x.includes(this.searchValue)) {
-                resultData[index] = data;
-                dummyData[index] = null;
+              if ("string" === typeof x) {
+                x = x.replace(/[^a-zA-Z0-9 ]/g, "");
+                if (x && x.includes(searchV)) {
+                  resultData[index] = data;
+                  dummyData[index] = null;
+                }
+              } else {
+                if (x && x === parseInt(searchV)) {
+                  resultData[index] = data;
+                  dummyData[index] = null;
+                }
               }
             }
           });
@@ -493,7 +526,7 @@ export class PagginationDataModel {
 
   /**
    *Creates an instance of PagginationDataModel.
-   * @param number [lastI]
+   * @param {number} [lastI]
    * @memberof PagginationDataModel
    */
   constructor(lastI?: number) {
@@ -521,8 +554,8 @@ export class PagginationDataModel {
   /**
    * creates an set of page data for UI
    *
-   * @param number startI
-   * @param number endI
+   * @param {number} startI
+   * @param {number} endI
    * @memberof PagginationDataModel
    */
   createViewPageIndexList(startI: number, endI: number) {
@@ -537,7 +570,7 @@ export class PagginationDataModel {
   /**
    * creates an set of page data for UI on Prev and Next click
    *
-   * @param number optNumber
+   * @param {number} optNumber
    * @memberof PagginationDataModel
    */
   createNextSetOfViewData(optNumber: number) {

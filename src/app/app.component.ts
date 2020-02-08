@@ -10,7 +10,7 @@ export class AppComponent {
   constructor() {
     this.data = [
       {
-        empName: "dattaram Gawas",
+        empName: "Ranjit Gavade",
         empCode: 11
       },
       {

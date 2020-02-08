@@ -6,16 +6,25 @@
       [(ngModel)]="searchValue"
       class="form-control custom-search-input"
       (keyup)="SearchHandle()"
-      (focus)="focusHandle()"
       aria-label="Text input with dropdown button"
       placeholder="search"
     />
+    <button
+      class="custom-btn"
+      type="button"
+      (click)="showColumnDropdown = !showColumnDropdown"
+      aria-haspopup="true"
+      aria-expanded="false"
+    >
+      <i class="fa fa-caret-down" aria-hidden="true"></i>
+    </button>
+
     <ul *ngIf="showColumnDropdown">
       <li
         *ngFor="let column of columnData; trackBy: trackByColumn"
         (click)="selectColumnForSearchHandle(column)"
       >
-        <a class="col-name" *ngIf="!column.hidden"
+        <a class="col-name" *ngIf="!column.hidden && column.sortable"
           >{{ column.label }}
           <i
             class="fa d-table-checkbox"
@@ -41,6 +50,7 @@
         >
           {{ column.label }} &nbsp;
           <i
+            *ngIf="column.sortable"
             class="fa fa-sort"
             style="cursor: pointer;"
             (click)="sortHandle(column)"

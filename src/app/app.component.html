@@ -1,4 +1,15 @@
 <d-datatable [gridData]="data" [pageSize]="'5'" [height]="'40vh'">
   <d-column [label]="'Name'" [dataKey]="'empName'"> </d-column>
   <d-column [label]="'Id'" [dataKey]="'empCode'"> </d-column>
+
+  <d-column
+    [label]="'REMOVE'"
+    [width]="'100px'"
+    [dataKey]="''"
+    [sortable]="false"
+  >
+    <ng-template #columnTemplate let-row="row" let-rowIndex="rowIndex">
+      <i class="fa fa-trash" aria-hidden="true"></i>
+    </ng-template>
+  </d-column>
 </d-datatable>
